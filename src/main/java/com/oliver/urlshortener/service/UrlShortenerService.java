@@ -15,7 +15,6 @@ public class UrlShortenerService {
     private final String REDIS_KEY_PREFIX = "url:";
     private static final String BASE58_CHARS = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
 
-
     public UrlShortenerService(RedisTemplate<String, String> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
