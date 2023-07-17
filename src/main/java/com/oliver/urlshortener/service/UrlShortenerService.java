@@ -4,14 +4,18 @@ import com.oliver.utils.SnowFlake;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.beans.PropertyEditorSupport;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 /**
  * @author xiaorui
  */
 @Service
 public class UrlShortenerService {
-    private RedisTemplate<String, String> redisTemplate;
+    private final RedisTemplate<String, String> redisTemplate;
     private final String REDIS_KEY_PREFIX = "url:";
     private static final String BASE58_CHARS = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
     private static final String REGEX = "^[a-zA-Z0-9_-]+$";
@@ -23,6 +27,9 @@ public class UrlShortenerService {
     }
 
     public String shortenUrl(String longUrl) {
+        if (!isValidUrl(longUrl)) {
+            throw new IllegalArgumentException("Invalid URL.");
+        }
         String shortUrl = generateShortUrl();
         String redisKey = REDIS_KEY_PREFIX + shortUrl;
         redisTemplate.opsForValue().set(redisKey, longUrl);
@@ -48,7 +55,11 @@ public class UrlShortenerService {
 
     public String customizeUrl(String longUrl, String customPath) {
         if (!isValidCustomPath(customPath)) {
-            throw  new IllegalArgumentException("Invalid custom path.");
+            throw new IllegalArgumentException("Invalid custom path.");
+        }
+
+        if (!isValidUrl(longUrl)) {
+            throw new IllegalArgumentException("Invalid URL.");
         }
 
         String redisKey = REDIS_KEY_PREFIX + customPath;
@@ -58,6 +69,24 @@ public class UrlShortenerService {
         }
         redisTemplate.opsForValue().set(redisKey, longUrl);
         return customPath;
+    }
+
+    private boolean isValidUrl(String url) {
+        try {
+            // Check syntax
+            new URL(url).toURI();
+
+            // Check accessibility
+            HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+            int statusCode = connection.getResponseCode();
+            return statusCode == HttpURLConnection.HTTP_OK;
+        } catch (MalformedURLException | URISyntaxException e) {
+            // Syntax error
+            return false;
+        } catch (IOException e) {
+            // Accessibility error
+            return false;
+        }
     }
 
     private boolean isValidCustomPath(String customPath) {
