@@ -14,6 +14,9 @@ public class UrlShortenerService {
     private RedisTemplate<String, String> redisTemplate;
     private final String REDIS_KEY_PREFIX = "url:";
     private static final String BASE58_CHARS = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+    private static final String REGEX = "^[a-zA-Z0-9_-]+$";
+    private static final int CUSTOM_URL_MIN_LEN = 4;
+    private static final int CUSTOM_URL_MAX_LEN = 20;
 
     public UrlShortenerService(RedisTemplate<String, String> redisTemplate) {
         this.redisTemplate = redisTemplate;
@@ -41,6 +44,34 @@ public class UrlShortenerService {
         }
 
         return sb.toString();
+    }
+
+    public String customizeUrl(String longUrl, String customPath) {
+        if (!isValidCustomPath(customPath)) {
+            throw  new IllegalArgumentException("Invalid custom path.");
+        }
+
+        String redisKey = REDIS_KEY_PREFIX + customPath;
+        // Check if customPath is already in use
+        if (redisTemplate.hasKey(redisKey)) {
+            throw new IllegalArgumentException("Custom path is already in use.");
+        }
+        redisTemplate.opsForValue().set(redisKey, longUrl);
+        return customPath;
+    }
+
+    private boolean isValidCustomPath(String customPath) {
+        // Custom URL length must be between 4 and 20 characters
+        if (customPath.length() < CUSTOM_URL_MIN_LEN || customPath.length() > CUSTOM_URL_MAX_LEN) {
+            return false;
+        }
+
+        // Custom URL must only contain alphanumeric characters, "-", and "_"
+        if (!customPath.matches(REGEX)) {
+            return false;
+        }
+
+        return true;
     }
 
     private String generateShortUrl() {

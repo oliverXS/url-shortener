@@ -21,6 +21,16 @@ public class UrlShortenerController {
         return shortUrl;
     }
 
+    @PostMapping("/customize")
+    public String customizeUrl(@RequestParam String longUrl, @RequestParam String customPath) {
+        try {
+            String customUrl = urlShortenerService.customizeUrl(longUrl, customPath);
+            return customUrl;
+        } catch (IllegalArgumentException e) {
+            return "Error: " + e.getMessage();
+        }
+    }
+
     @GetMapping("/{shortUrl}")
     public RedirectView redirectToLongUrl(@PathVariable String shortUrl) {
         String longUrl = urlShortenerService.getLongUrl(shortUrl);
