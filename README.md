@@ -37,9 +37,9 @@ By employing the Snowflake algorithm and utilizing base-58 encoding, the project
 
 - [x] Customize URL.
 - [x] URL Validation.
+- [x] Use MongoDB as main database.
+- [x] Use Redis as cache for MongoDB.
 - [ ] Duplicate URL Handling.
-- [ ] Use MongoDB as main database.
-- [ ] Use Redis as cache for MongoDB.
 - [ ] Use Redis as rate limitor.
 - [ ] User Accounts and Authentication.
 - [ ] Statistics.
