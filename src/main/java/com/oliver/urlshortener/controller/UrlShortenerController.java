@@ -34,7 +34,6 @@ public class UrlShortenerController {
     @GetMapping("/{shortUrl}")
     public RedirectView redirectToLongUrl(@PathVariable String shortUrl) {
         String longUrl = urlShortenerService.getLongUrl(shortUrl);
-        System.out.println(longUrl);
         if (longUrl != null) {
             return new RedirectView(longUrl);
         } else {
