@@ -1,5 +1,6 @@
 package com.oliver.urlshortener.controller;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import com.oliver.urlshortener.service.UrlShortenerService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
@@ -7,6 +8,7 @@ import org.springframework.web.servlet.view.RedirectView;
 /**
  * @author xiaorui
  */
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 public class UrlShortenerController {
     private UrlShortenerService urlShortenerService;

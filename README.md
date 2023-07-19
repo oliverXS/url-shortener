@@ -35,12 +35,16 @@ By employing the Snowflake algorithm and utilizing base-58 encoding, the project
 
 ![url-shortener-v3](./images/url-shortener-v3.png)
 
+# Demo
+
+![demo](./images/demo.png)
+
 - [x] Customize URL.
 - [x] URL Validation.
 - [x] Use MongoDB as main database.
 - [x] Use Redis as cache for MongoDB.
-- [ ] Duplicate URL Handling.
+- [x] UI/UX Improvements.
+- [x] Generate QR code for short url.
 - [ ] Use Redis as rate limitor.
 - [ ] User Accounts and Authentication.
 - [ ] Statistics.
-- [ ] UI/UX Improvements.
